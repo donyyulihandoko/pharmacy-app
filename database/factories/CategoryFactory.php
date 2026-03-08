@@ -20,7 +20,7 @@ class CategoryFactory extends Factory
         return [
             'name' => fake()->unique()->word(),
             'slug' => Str::slug('name'),
-            'icon' => fake()->imageUrl(),
+            'icon' => 'https://picsum.photos/seed/' . Str::random(10) . '/600/600',
             'description' => fake()->text(50),
             'is_active' => true
         ];

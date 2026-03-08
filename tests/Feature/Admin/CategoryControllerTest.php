@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use Exception;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use App\Services\CategoryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,39 +27,39 @@ class CategoryControllerTest extends TestCase
     }
     public function test_index_succes()
     {
-        $response = $this->actingAs($this->admin)->get(route('categories.index'));
+        $response = $this->actingAs($this->admin)->get(route('admin.categories.index'));
         $response->assertStatus(200);
     }
 
     public function test_index_failed_not_login()
     {
-        $response = $this->get(route('categories.index'));
+        $response = $this->get(route('admin.categories.index'));
         $response->assertStatus(302)->assertRedirectToRoute('login');
     }
 
     public function test_index_failed_wrong_role_user()
     {
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get(route('categories.index'));
+        $response = $this->actingAs($user)->get(route('admin.categories.index'));
         $response->assertStatus(403);
     }
 
     public function test_create_succes()
     {
-        $response = $this->actingAs($this->admin)->get(route('categories.create'));
+        $response = $this->actingAs($this->admin)->get(route('admin.categories.create'));
         $response->assertStatus(200);
     }
 
     public function test_create_failed_not_login()
     {
-        $response = $this->get(route('categories.create'));
+        $response = $this->get(route('admin.categories.create'));
         $response->assertStatus(302)->assertRedirectToRoute('login');
     }
 
     public function test_create_failed_wrong_role_user()
     {
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get(route('categories.create'));
+        $response = $this->actingAs($user)->get(route('admin.categories.create'));
         $response->assertStatus(403);
     }
 
@@ -72,10 +73,10 @@ class CategoryControllerTest extends TestCase
             'icon' => $file,
             'is_active' => true
         ];
-        $response = $this->actingAs($this->admin)->post(route('categories.store'), $category);
+        $response = $this->actingAs($this->admin)->post(route('admin.categories.store'), $category);
 
         $response->assertStatus(302)
-            ->assertRedirectToRoute('categories.index')
+            ->assertRedirectToRoute('admin.categories.index')
             ->assertSessionHas('success', 'Category created successfully!');
 
         $this->assertDatabaseHas('categories', [
@@ -97,8 +98,8 @@ class CategoryControllerTest extends TestCase
             'is_active' => ''
         ];
         $response = $this->actingAs($this->admin)
-            ->from(route('categories.create'))
-            ->post(route('categories.store'), $category);
+            ->from(route('admin.categories.create'))
+            ->post(route('admin.categories.store'), $category);
 
         $response->assertStatus(302)
             ->assertRedirectBack()
@@ -126,8 +127,8 @@ class CategoryControllerTest extends TestCase
         ];
 
         $response = $this->actingAs($this->admin)
-            ->from(route('categories.create'))
-            ->post(route('categories.store'), $category);
+            ->from(route('admin.categories.create'))
+            ->post(route('admin.categories.store'), $category);
 
         $response->assertStatus(302)
             ->assertRedirectBack()
@@ -155,8 +156,8 @@ class CategoryControllerTest extends TestCase
 
 
         $response = $this->actingAs($this->admin)
-            ->from(route('categories.create'))
-            ->post(route('categories.store'), $data);
+            ->from(route('admin.categories.create'))
+            ->post(route('admin.categories.store'), $data);
 
         $response->assertStatus(302)
             ->assertRedirectBack()
@@ -166,7 +167,7 @@ class CategoryControllerTest extends TestCase
     public function test_edit_success()
     {
         $category = Category::factory()->create();
-        $response = $this->actingAs($this->admin)->get(route('categories.edit', $category));
+        $response = $this->actingAs($this->admin)->get(route('admin.categories.edit', $category));
         $response->assertStatus(200);
     }
 
@@ -174,14 +175,14 @@ class CategoryControllerTest extends TestCase
     {
         $category = Category::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get(route('categories.edit', $category));
+        $response = $this->actingAs($user)->get(route('admin.categories.edit', $category));
         $response->assertStatus(403);
     }
 
     public function test_edit_failed_not_login()
     {
         $category = Category::factory()->create();
-        $response = $this->get(route('categories.edit', $category));
+        $response = $this->get(route('admin.categories.edit', $category));
         $response->assertStatus(302)
             ->assertRedirectToRoute('login');
     }
@@ -206,11 +207,11 @@ class CategoryControllerTest extends TestCase
             'description' => 'Kategori untuk berbagai macam suplemen update.',
             'is_active'   => true,
         ];
-        $response = $this->actingAs($this->admin)->put(route('categories.update', $category), $data);
+        $response = $this->actingAs($this->admin)->put(route('admin.categories.update', $category), $data);
 
         // assertion
         $response->assertStatus(302)
-            ->assertRedirectToRoute('categories.index')
+            ->assertRedirectToRoute('admin.categories.index')
             ->assertSessionHas('success', 'Category updated successfully!');
 
         $this->assertDatabaseHas('categories', [
@@ -254,11 +255,11 @@ class CategoryControllerTest extends TestCase
         ];
 
         $response = $this->actingAs($this->admin)
-            ->put(route('categories.update', $category), $data);
+            ->put(route('admin.categories.update', $category), $data);
 
         // asserting
         $response->assertStatus(302)
-            ->assertRedirectToRoute('categories.index')
+            ->assertRedirectToRoute('admin.categories.index')
             ->assertSessionHas('success', 'Category updated successfully!');
 
         $this->assertDatabaseHas('categories', [
@@ -282,8 +283,8 @@ class CategoryControllerTest extends TestCase
         $category = Category::factory()->create();
 
         $response =  $this->actingAs($this->admin)
-            ->from(route('categories.edit', $category))
-            ->put(route('categories.update', $category), [
+            ->from(route('admin.categories.edit', $category))
+            ->put(route('admin.categories.update', $category), [
                 'name' => '',
                 'description' => '',
                 'is_active' => ''
@@ -312,8 +313,8 @@ class CategoryControllerTest extends TestCase
 
         // set up update data
         $response =  $this->actingAs($this->admin)
-            ->from(route('categories.edit', $category))
-            ->put(route('categories.update', $category), [
+            ->from(route('admin.categories.edit', $category))
+            ->put(route('admin.categories.update', $category), [
                 'name' => 'Test Update',
                 'description' => 'Description Test Update',
                 'icon' => UploadedFile::fake('public')->image('test-icon.jpg'),
@@ -335,8 +336,8 @@ class CategoryControllerTest extends TestCase
 
         // set up delete data
         $response = $this->actingAs($this->admin)
-            ->from(route('categories.index'))
-            ->delete(route('categories.destroy', $category));
+            ->from(route('admin.categories.index'))
+            ->delete(route('admin.categories.destroy', $category));
 
         // assert
         $response->assertStatus(302)
@@ -358,11 +359,29 @@ class CategoryControllerTest extends TestCase
         });
 
         $response = $this->actingAs($this->admin)
-            ->from(route('categories.index'))
-            ->delete(route('categories.destroy', $category));
+            ->from(route('admin.categories.index'))
+            ->delete(route('admin.categories.destroy', $category));
 
         $response->assertStatus(302)
             ->assertRedirectBack()
             ->assertSessionHas('error', 'Category delete failed!');
+    }
+
+    public function test_destroy_failed_categories_has_product()
+    {
+        $category = Category::factory()->create([
+            'name' => 'test product'
+        ]);
+
+        Product::factory()->create([
+            'category_id' => 1
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->delete(route('admin.categories.destroy', $category));
+
+        $response->assertStatus(302)
+            ->assertRedirectBack()
+            ->assertSessionHas('error', 'The category cannot be deleted because it still contains associated products.');
     }
 }

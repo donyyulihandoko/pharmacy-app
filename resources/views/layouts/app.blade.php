@@ -9,7 +9,7 @@
 
 <body class="bg-gray-50 antialiased font-sans">
     
-  
+
     <x-navbar/>   
 
     <x-sidebar/>    
@@ -40,7 +40,7 @@
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Data kategori ini akan dihapus permanen!",
+                text: "Data ini akan dihapus permanen!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#14b8a6', // Teal 500 (sesuai tema kamu)
@@ -56,6 +56,8 @@
         }
     });
 </script>
-    
+    {{-- Tambahkan CDN TomSelect di head/footer --}}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 </body>
 </html>

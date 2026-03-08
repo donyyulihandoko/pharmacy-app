@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface CategoryService
@@ -15,4 +16,6 @@ interface CategoryService
     public function updateCategory(Category $category, array $data);
 
     public function removeCategory(Category $category): bool;
+
+    public function getAllCategories(): Collection;
 }

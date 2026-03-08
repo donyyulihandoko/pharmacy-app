@@ -31,15 +31,20 @@ class UpdateCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('categories', 'name')->ignore($category?->id)
             ],
+            // 'slug' => [
+            //     'required',
+            //     'string',
+            //     Rule::unique('categories', 'slug')->ignore($category?->id)
+            // ],
             'icon' => [
                 'nullable',
                 'image',
                 'mimes:png,jpg,jpeg,svg',
-                'max:2000'
+                'max:2048',
             ],
             'description' => [
                 'required',
-                'max:255',
+                'max:1000',
                 'string'
             ],
             'is_active' => [

@@ -16,6 +16,7 @@
                     <tr class="bg-teal-50/50 text-teal-700 text-[11px] uppercase tracking-[0.2em] border-b-2 border-teal-50">
                         <th class="px-8 py-6 text-center w-20">No</th>
                         <th class="px-8 py-6">Informasi Kategori</th>
+                        <th class="px-8 py-6">Jumlah Product</th>
                         <th class="px-8 py-6">Deskripsi</th>
                         <th class="px-8 py-6 text-right">Aksi</th>
                     </tr>
@@ -33,7 +34,9 @@
                                     {{-- image start --}}
                                     <div class="w-14 h-14 rounded-2xl overflow-hidden shadow-lg shadow-teal-100 group-hover:scale-110 transition-all transform border-2 border-white">
                                         @if($category->icon)
-                                            <img src="{{ asset('storage/' . $category->icon) }}" class="w-full h-full object-cover">
+                                            <img
+                                            src="{{ Str::startsWith($category->icon, 'http') ? $category->icon : asset('storage/' . $category->icon) }}" 
+                                            class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center text-white font-black">
                                                 {{ substr($category->name, 0, 1) }}
@@ -50,6 +53,18 @@
                         </td>
 
                         <td class="px-8 py-6">
+                            <div class="flex items-center gap-2">
+                                <span @class([
+                                    'px-3 py-1 rounded-full text-xs font-black tracking-wider shadow-sm',
+                                    'bg-teal-100 text-teal-700' => $category->products_count > 0,
+                                    'bg-gray-100 text-gray-400' => $category->products_count <= 0,
+                                ])>
+                                    {{ $category->products_count }} 
+                                    <span class="font-medium text-[10px] uppercase ml-1">Items</span>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
                             <p class="text-gray-500 leading-relaxed font-medium max-w-xs line-clamp-2" title="{{ $category->description }}">
                                 {{ $category->description ?? '—' }}
                             </p>
@@ -57,20 +72,38 @@
 
                         <td class="px-8 py-6 text-right">
                             <div class="flex justify-end gap-3">
-                                <a href="{{ route('categories.edit', $category) }}" class="w-11 h-11 flex items-center justify-center text-teal-600 bg-teal-50 hover:bg-teal-500 hover:text-white rounded-xl transition-all shadow-sm group/btn" title="Edit">
+                                <a href="{{ route('admin.categories.edit', $category) }}" class="w-11 h-11 flex items-center justify-center text-teal-600 bg-teal-50 hover:bg-teal-500 hover:text-white rounded-xl transition-all shadow-sm group/btn" title="Edit">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </a>
-                                <button type="button" 
-                                    data-id="{{ $category->id }}" 
-                                    class="delete-btn  w-11 h-11 flex items-center justify-center text-rose-500 bg-rose-50 hover:bg-rose-500 hover:text-white rounded-xl transition-all shadow-sm" title="Hapus" >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
+                                @if ($category->products_count > 0)
+                                    <button type="button" 
+                                        disabled
+                                        class="w-11 h-11 flex items-center justify-center text-gray-400 bg-gray-50 border border-gray-100 rounded-xl cursor-not-allowed opacity-70 shadow-none transition-all" 
+                                        title="Cannot delete: This category still contains {{ $category->products_count }} products">
+                                        
+                                        {{-- Icon Gembok Kecil sebagai indikator tambahan --}}
+                                        <div class="relative">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                            <span class="absolute -top-1 -right-1 bg-white rounded-full">
+                                                <svg class="w-3 h-3 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                                            </span>
+                                        </div>
+                                    </button>
+                                @else
+                                    <button type="button" 
+                                        data-id="{{ $category->id }}" 
+                                        class="delete-btn  w-11 h-11 flex items-center justify-center text-rose-500 bg-rose-50 hover:bg-rose-500 hover:text-white rounded-xl transition-all shadow-sm" title="Hapus" >
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
 
-                                <form action="{{ route('categories.destroy', $category) }}" method="POST" id="delete-form-{{ $category->id }}" class="hidden">
-                                    @csrf 
-                                    @method('DELETE')
-                                </form>
-                                
+                                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" id="delete-form-{{ $category->id }}" class="hidden">
+                                        @csrf 
+                                        @method('DELETE')
+                                    </form>
+                                @endif
+                            
                             </div>
                         </td>
                     </tr>

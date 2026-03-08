@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use App\Services\CategoryService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -73,5 +74,10 @@ class CategoryServiceImpl implements CategoryService
 
             return (bool) $deleted;
         });
+    }
+
+    public function getAllCategories(): Collection
+    {
+        return $this->categoryRepository->getAllCategories();
     }
 }

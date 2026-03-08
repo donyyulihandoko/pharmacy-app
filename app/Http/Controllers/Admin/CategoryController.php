@@ -40,7 +40,7 @@ class CategoryController extends Controller
                 'user' => Auth::id()
             ]);
             $this->categoryService->addCategory($request->validated());
-            return to_route('categories.index')->with('success', 'Category created successfully!');
+            return to_route('admin.categories.index')->with('success', 'Category created successfully!');
         } catch (Exception $e) {
             Log::error('Category create failed : ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Category create failed!');
@@ -62,7 +62,7 @@ class CategoryController extends Controller
                 'user' => Auth::id()
             ]);
             $this->categoryService->updateCategory($category, $request->validated());
-            return to_route('categories.index')->with('success', 'Category updated successfully!');
+            return to_route('admin.categories.index')->with('success', 'Category updated successfully!');
         } catch (Exception $e) {
             Log::error('Category update failed : ' . $e->getMessage());
             return redirect()->back()
@@ -81,7 +81,13 @@ class CategoryController extends Controller
             $this->categoryService->removeCategory($category);
             return redirect()->back()->with('success', 'Category deleted successfully!');
         } catch (Exception $e) {
+
             Log::error('Category delete failed : ' . $e->getMessage());
+
+            if ($e->getCode() === '23000' || str_contains($e->getMessage(), '23000')) {
+                return redirect()->back()->with('error', 'The category cannot be deleted because it still contains associated products.');
+            }
+
             return redirect()->back()->with('error', 'Category delete failed!');
         }
     }

@@ -34,9 +34,10 @@ class CategoryServiceTest extends TestCase
         Category::factory(10)->create();
         $response = $this->categoryService->getCategories();
         $this->assertNotNull($response);
+        $this->assertEquals(10, $response->total());
     }
 
-    public function test__get_categories_with_search()
+    public function test_get_categories_with_search()
     {
         Category::factory()->create([
             'name' => 'Pain Killer'
@@ -163,12 +164,13 @@ class CategoryServiceTest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists($category->refresh()->icon));
         $this->assertFalse(Storage::disk('public')->exists($oldPath));
     }
+
     public function test_update_category_throw_validation_error()
     {
         $category = Category::factory()->create();
 
         $this->expectException(Exception::class);
-        $this->categoryService->updatecategory($category, [
+        $this->categoryService->updateCategory($category, [
             'name' => null
         ]);
     }

@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCategoryRequest extends FormRequest
+class StoreProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,24 +28,29 @@ class StoreCategoryRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:255',
-                Rule::unique('categories', 'name')
+                Rule::unique('products', 'name')
             ],
-            // 'slug' => ['required', 'string', Rule::unique('categories', 'slug')],
-            'icon' => [
+            // 'slug' => ['required', 'string', Rule::unique('products', 'slug')],
+            'image' => [
                 'required',
                 'image',
                 'mimes:png,jpg,jpeg,svg',
                 'max:2048',
             ],
-            'description' => [
+            'price' => [
                 'required',
-                'max:1000',
+                'numeric',
+                'min:0'
+            ],
+            'about' => [
+                'required',
+                'max:2000',
                 'string'
             ],
-            'is_active' => [
-                'sometimes',
-                'boolean'
-            ]
+            'category_id' => [
+                'required',
+                'exists:categories,id'
+            ],
         ];
     }
 }
