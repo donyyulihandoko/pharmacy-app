@@ -6,7 +6,7 @@
             <h1 class="text-4xl font-black text-gray-900 tracking-tight">Edit Kategori</h1>
             <p class="text-blue-600/60 font-medium mt-1">Edit detail kategori untuk pengelompokan obat yang lebih rapi.</p>
         </div>
-        <a href="{{ route('categories.index') }}" class="inline-flex items-center text-sm font-bold text-gray-400 hover:text-red-500 transition-colors group">
+        <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center text-sm font-bold text-gray-400 hover:text-red-500 transition-colors group">
             <div class="p-2 rounded-full group-hover:bg-red-50 transition-colors mr-1">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </div>
@@ -14,7 +14,7 @@
         </a>
     </div>
 
-    <form action="{{ route('categories.update', $category) }}" method="POST" enctype="multipart/form-data" class="w-full px-4">
+    <form action="{{ route('admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data" class="w-full px-4">
         @csrf @method('PUT')
         <div class="bg-white border border-blue-100 rounded-[3.5rem] shadow-2xl shadow-blue-100/50 overflow-hidden">
             <div class="p-10 md:p-16">

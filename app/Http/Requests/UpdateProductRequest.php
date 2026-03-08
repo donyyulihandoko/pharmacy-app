@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 
-class StoreCategoryRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,30 +22,38 @@ class StoreCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $product = $this->route('product');
         return [
             'name' => [
                 'required',
                 'string',
                 'min:3',
                 'max:255',
-                Rule::unique('categories', 'name')
+                Rule::unique('products', 'name')->ignore($product?->id)
             ],
-            // 'slug' => ['required', 'string', Rule::unique('categories', 'slug')],
-            'icon' => [
-                'required',
+            // 'slug' => ['required', 'string', Rule::unique('products', 'slug')],
+            'image' => [
+                'nullable',
                 'image',
                 'mimes:png,jpg,jpeg,svg',
                 'max:2048',
             ],
-            'description' => [
+            'price' => [
                 'required',
-                'max:1000',
+                'numeric',
+                'min:0',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'about' => [
+                'required',
+                'max:2000',
                 'string'
             ],
-            'is_active' => [
-                'sometimes',
-                'boolean'
-            ]
+            'category_id' => [
+                'required',
+                'integer',
+                'exists:categories,id'
+            ],
         ];
     }
 }
